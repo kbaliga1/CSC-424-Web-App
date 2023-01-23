@@ -8,7 +8,7 @@ import { useAuth } from "./context/AuthProvider";
 import { AuthProvider } from "./context/AuthProvider";
 
 export const AuthContext = React.createContext(null);  // we will use this in other components
-
+//test
 const App = () => {
 
     return (
