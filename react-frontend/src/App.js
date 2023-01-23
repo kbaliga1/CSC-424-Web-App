@@ -3,12 +3,11 @@ import {Routes, Route, Link, NavLink} from "react-router-dom";
 import {Home} from "./Home";
 import {Landing} from "./Landing";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
-import {fakeAuth} from "./utils/FakeAuth"
 import { useAuth } from "./context/AuthProvider";
 import { AuthProvider } from "./context/AuthProvider";
 
 export const AuthContext = React.createContext(null);  // we will use this in other components
-//test
+
 const App = () => {
 
     return (
