@@ -10,21 +10,16 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
 
     const handleLogin = async (username,password) => {
-        // const token = await fakeAuth();
-        //const username = "admin";
-        //const password = "assword";
+
         const token = await axios.post("http://localhost:5001/account/login", {
             username,
             password
         }).then((res) => {
-            //console.log(res.data)
             setToken(res.data.token);
         }).catch(error => {
-            console.log(error)
-            alert("LOGIN FAILED")
+            console.log(error.response.data.error)
+            alert(error.response.data.error)
         });
-        //console.log("Token:",token)
-        //setToken(token);
         navigate("/landing");
     };
 
@@ -32,10 +27,23 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
     };
 
+    const handleRegister = async (username,password) => {
+        const token = await axios.post("http://localhost:5001/account/register", {
+            username,
+            password
+        }).then((res) => {
+            alert("Successfully Registered");
+        }).catch(error => {
+            console.log(error.response.data.error);
+            alert(error.response.data.error);
+        })
+    };
+
     const value = {
         token,
         onLogin: handleLogin,
         onLogout: handleLogout,
+        onRegister: handleRegister
     };
 
     return (

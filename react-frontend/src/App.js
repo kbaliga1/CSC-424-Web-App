@@ -2,6 +2,7 @@ import React from "react";
 import {Routes, Route, Link, NavLink} from "react-router-dom";
 import {Home} from "./Home";
 import {Landing} from "./Landing";
+import {Register} from "./Register";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import { useAuth } from "./context/AuthProvider";
 import { AuthProvider } from "./context/AuthProvider";
@@ -16,6 +17,7 @@ const App = () => {
 
             <h1>React Router</h1>
             <Routes>
+                <Route path="register" element={<Register />} />
                 <Route index element={<Home />} />
                 <Route
                     path="landing"
@@ -37,6 +39,7 @@ const Navigation = () => {
     const { value } = useAuth();
     return(
     <nav>
+        <NavLink to="/register">Register</NavLink>
         <NavLink to="/home">Home</NavLink>
         <NavLink to="/landing">Landing</NavLink>
         {value.token && (

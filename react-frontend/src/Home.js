@@ -8,6 +8,7 @@ export const Home = () => {
     return (
         <>
             <h2>Home (Public)</h2>
+            <h3>Login:</h3>
             <div>
             <label>Username</label>
             <input type={"text"} value={username} onChange={e => setUsername(e.target.value)}/>
