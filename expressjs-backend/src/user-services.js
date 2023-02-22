@@ -10,6 +10,15 @@ mongoose
     })
     .catch((error) => console.log(error));
 
+async function getContacts() {
+    try {
+        const users = await userModel.find({}, 'name');
+        return users.map(user => user.name);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 async function getUsers(name, job) {
     let result;
     if (name === undefined && job === undefined) {
@@ -46,8 +55,15 @@ async function addUser(username,password) {
 }
 
 async function findUserByName(name) {
-    return await userModel.find({ name: name });
+    return await userModel.findOne({ name: name });
 }
+
+const checkUserExists = async (username) => {
+    const user = await userModel.findOne({ name: username }).exec(); // query the database for the user with the given name
+    console.log(user)
+    console.log(user !== null)
+    return user !== null; // return true if user is found, false otherwise
+};
 
 async function findUserByJob(job) {
     return await userModel.find({ job: job });
@@ -60,5 +76,7 @@ async function findUser(username,password) {
 exports.getUsers = getUsers;
 exports.findUserById = findUserById;
 exports.findUserByName = findUserByName;
+exports.getContacts = getContacts;
 exports.addUser = addUser;
 exports.findUser = findUser;
+exports.checkUserExists = checkUserExists;

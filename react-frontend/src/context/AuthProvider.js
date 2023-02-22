@@ -8,23 +8,10 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
 
-    const getUsername = async (token) => {
-        const config = {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        };
-        const name = await axios.get("http://localhost:5001/username", config
-        ).then((res) => {
-            return res.data.username;
-        }) .catch(error => {
-            console.log(error.response.data.error)
-        })
-    };
-
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     const [username, setUsername] = useState(null);
+    const [contacts, setContacts] = useState([]);
     const cookie = Cookies.get("jwt_authorization")//new Cookies();
     if(cookie != null && token == null) {
         setToken(cookie);
@@ -32,13 +19,14 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         if (token != null && username == null) {
-            setUsername(getUsername(token));
+            getUsername(token);
         }
+        getContacts();
     }, [token, username]);
 
     const handleLogin = async (username,password) => {
 
-        const token = await axios.post("http://localhost:5001/account/login", {
+        const token = await axios.post("https://localhost:5001/account/login", {
             username,
             password
         }).then((res) => {
@@ -57,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const handleRegister = async (username,password) => {
-        const token = await axios.post("http://localhost:5001/account/register", {
+        const token = await axios.post("https://localhost:5001/account/register", {
             username,
             password
         }).then((res) => {
@@ -68,12 +56,41 @@ export const AuthProvider = ({ children }) => {
         })
     };
 
+    const getContacts = async () => {
+        axios.get('https://localhost:5001/contacts')
+            .then(response => {
+                const names = response.data; // the list of names is in the response data
+                console.log(names);
+                setContacts(names);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    const getUsername = async (token) => {
+        const config = {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        };
+        await axios.get("https://localhost:5001/username", config
+        ).then((res) => {
+            console.log(res.data.username)
+            setUsername(res.data.username);
+        }) .catch(error => {
+            console.log(error.response.data.error)
+        })
+    };
+
     const value = {
         token,
         username,
+        contacts,
         onLogin: handleLogin,
         onLogout: handleLogout,
-        onRegister: handleRegister
+        onRegister: handleRegister,
+        getContacts: getContacts
     };
 
     return (

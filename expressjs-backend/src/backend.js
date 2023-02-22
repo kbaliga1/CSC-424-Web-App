@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const port = 5001;
 const cors = require("cors");
-const {addUser, findUser} = require("./user-services");
+const {addUser, findUser, getContacts, checkUserExists} = require("./user-services");
 const {findUserByName} = require("./user-services");
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const https = require('https');
+const fs = require('fs');
 dotenv.config();
 
 //table to store users
@@ -22,7 +24,7 @@ function generateAccessToken(username) {
 app.use(express.json());
 
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: "https://localhost:3000",
     optionsSuccessStatus: 200
 }
 
@@ -48,6 +50,11 @@ app.get('/username',authenticateToken,(req,res) => {
     res.json({username});
 })
 
+app.get('/contacts', async (req, res) => {
+    const names = await getContacts(); // call the getUsers function to get the list of names
+    res.json(names); // send the list of names as a JSON response
+});
+
 app.post("/account/login", async (req, res) => {
    const {username,password} = req.body;
 
@@ -69,7 +76,8 @@ app.post("/account/register", async (req,res) => {
 
     //check if username is taken
     // const taken = users.find(u => u.username == username);
-    const taken = findUserByName(username)
+    const taken = await checkUserExists(username)
+    console.log(taken)
     if(taken) {
         return res.status(400).json({error: "Username taken"});
     }
@@ -101,6 +109,15 @@ app.get('/users', (req, res) => {
     res.json(users)
 })
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+const options = {
+    key: fs.readFileSync('../certs/key.pem'),
+    cert: fs.readFileSync('../certs/cert.pem')
+};
+
+https.createServer(options, app).listen(port, () => {
+    console.log(`Example app listening at https://localhost:${port}`);
 });
+
+// app.listen(port, () => {
+//     console.log(`Example app listening at http://localhost:${port}`);
+// });
