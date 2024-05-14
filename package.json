@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "react-native": "^0.71.1",
+    "react-native": "^0.73.0",
     "react-router-dom": "^6.7.0"
   }
 }
